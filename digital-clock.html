@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>ساعة رقمية - مناطق زمنية مختلفة</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { font-family: 'Cairo', Arial, sans-serif; background: #f5f7fa; direction: rtl; }
+        .container { max-width: 450px; margin: 40px auto; background: #fff; border-radius: 18px; box-shadow: 0 2px 12px #dbe1ea; padding: 22px; }
+        h2 { text-align: center; color: #1866a0; margin-bottom: 16px; }
+        .clock-list { list-style: none; padding: 0; margin: 0; }
+        .zone { display: flex; justify-content: space-between; background: #edf1f8; margin-bottom: 17px; border-radius: 10px; padding: 13px 16px; font-size: 1.15em; }
+        .zone-title { font-weight: 700; color: #1866a0; }
+        .zone-time { font-family: 'Consolas', monospace; color: #26797d; }
+        @media (max-width: 650px) { .container { max-width: 98%; padding: 6px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>ساعة رقمية للمناطق الزمنية</h2>
+        <ul class="clock-list" id="clockList">
+            <!-- سيتم إضافة المناطق الزمنية ديناميكياً هنا -->
+        </ul>
+    </div>
+    <script>
+        // المناطق الزمنية المراد عرضها (يمكنك إضافة أو تعديل)
+        const timeZones = [
+            { name: "مكة المكرمة (Asia/Riyadh)", zone: "Asia/Riyadh" },
+            { name: "جرينتش (UTC)", zone: "UTC" },
+            { name: "نيويورك (America/New_York)", zone: "America/New_York" },
+            { name: "لندن (Europe/London)", zone: "Europe/London" },
+            { name: "طوكيو (Asia/Tokyo)", zone: "Asia/Tokyo" }
+        ];
+
+        function pad(n) {
+            return n < 10 ? "0" + n : n;
+        }
+
+        function updateClocks() {
+            const clockList = document.getElementById('clockList');
+            clockList.innerHTML = "";
+            const now = new Date();
+            timeZones.forEach(tz => {
+                // استخدم Intl.DateTimeFormat لعرض الوقت حسب المنطقة الزمنية
+                const formatter = new Intl.DateTimeFormat('ar', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false,
+                    timeZone: tz.zone
+                });
+                const timeString = formatter.format(now);
+                // أضف العنصر للقائمة
+                const li = document.createElement("li");
+                li.className = "zone";
+                li.innerHTML = `<span class="zone-title">${tz.name}</span>
+                                <span class="zone-time">${timeString}</span>`;
+                clockList.appendChild(li);
+            });
+        }
+
+        // حدث الساعة كل ثانية
+        updateClocks();
+        setInterval(updateClocks, 1000);
+    </script>
+</body>
+</html>
